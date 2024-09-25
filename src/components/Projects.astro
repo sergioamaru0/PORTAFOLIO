@@ -1,0 +1,72 @@
+---
+import PhpIcon from "../assets/icons/PhpIcon.astro";
+import TailwindIcon from '../assets/icons/TailwindIcon.astro';
+import ProyectClima from '../assets/image/projectClima.jpeg';
+const TAGS = {
+    TAILWIND:{
+        name:'Tailwind CSS',
+        class:'bg-cyan-900 text-[#73bcf6]',
+        icon:TailwindIcon,
+    },
+    PHP:{
+        name:'PHP',
+        class:'bg-gray-700 text-white',
+        icon:PhpIcon,
+    }
+} 
+const PROJECTS =[
+    {
+        title:'CLIMA APP',
+        description: 'La aplicación proporciona información meteorológica actualizada en tiempo '+
+                    'real basada en la ubicación del usuario o en una ubicación seleccionada manualmente.',
+        link:'#',
+        github:'https://github.com/sergioamaru0/clima/blob/main/README.md',
+        image:{ProyectClima},
+        tags: [TAGS.TAILWIND],
+    }
+]  
+---
+{
+PROJECTS.map(({image,title,description,tags,github})=>(
+    <aticle>
+        <h3 class="text-2xl font-semibold text-yellow-900 dark:text-yellow-200 mb-2 text-center">{title}</h3>
+        <p class="text-lg mb-4 text-pretty">{description}</p>
+        <ul class="flex gap-x-2 flex-row">
+            {
+                tags.map((tag)=>(
+                    <li>
+                        <span 
+                            class={`flex gap-x-2 text-center flex-row rounded-full text-xs ${tag.class} py-1 px-2 mb-2`}>
+                            <tag.icon class="size-4"/>
+                            {tag.name}
+                        </span>                       
+                    </li>
+                ))
+            }
+        </ul>
+        <img 
+            class='rounded-xl' 
+            src={image.ProyectClima.src} 
+            alt={`Captura de pantalla del proyecto ${image}`}/>
+         <a href={github} class="flex justify-center">  
+          <h2 class="absolute align-middle bg-violet-600 hover:bg-violet-500 px-5 py-2 mt-3 text-sm 
+             rounded-full font-semibold text-white text-center inline-flex gap-x-2">
+                ir a proyecto
+                <svg
+                    class="w-3 h-3 mt-1"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 14 10"
+                >
+                    <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M1 5h12m0 0L9 1m4 4L9 9"></path>
+                </svg>
+            </h2>  
+        </a>  
+    </aticle>
+))
+
+}
