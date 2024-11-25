@@ -2,6 +2,9 @@
 import PhpIcon from "../assets/icons/PhpIcon.astro";
 import TailwindIcon from '../assets/icons/TailwindIcon.astro';
 import ProyectClima from '../assets/image/projectClima.jpeg';
+import postquickbet from '../assets/image/photomovie.png';
+import NextjsIcon from '../assets/icons/Nextjx.astro';
+
 const TAGS = {
     TAILWIND:{
         name:'Tailwind CSS',
@@ -12,24 +15,37 @@ const TAGS = {
         name:'PHP',
         class:'bg-gray-700 text-white',
         icon:PhpIcon,
+    },
+    nextJS:{
+        name:'nextJS',
+        class:'bg-black text-white',
+        icon:NextjsIcon,
     }
 } 
 const PROJECTS =[
     {
         title:'CLIMA APP',
+        description: 'QuickBet Movies es una aplicación web moderna y responsiva para explorar y ver películas en streaming. Construida con Next.js y React, ofrece una interfaz elegante para navegar, buscar y disfrutar de películas.',
+        link:'#',
+        github:'https://github.com/sergioamaru0/clima/blob/main/README.md',
+        image:ProyectClima,
+        tags: [TAGS.TAILWIND],
+    },
+    {
+        title:'QUICKBET',
         description: 'La aplicación proporciona información meteorológica actualizada en tiempo '+
                     'real basada en la ubicación del usuario o en una ubicación seleccionada manualmente.',
         link:'#',
-        github:'https://github.com/sergioamaru0/clima/blob/main/README.md',
-        image:{ProyectClima},
-        tags: [TAGS.TAILWIND],
+        github:'https://github.com/sergioamaru0/prueba-next.js/tree/master',
+        image:postquickbet,
+        tags: [TAGS.TAILWIND,TAGS.nextJS],
     }
 ]  
 ---
 {
 PROJECTS.map(({image,title,description,tags,github})=>(
     <aticle>
-        <h3 class="text-2xl font-semibold text-yellow-900 dark:text-yellow-200 mb-2 text-center">{title}</h3>
+        <h3 class="text-2xl font-semibold text-yellow-900 dark:text-yellow-200 mb-2 text-center" style="margin-top: 100px;">{title}</h3>
         <p class="text-lg mb-4 text-pretty">{description}</p>
         <ul class="flex gap-x-2 flex-row">
             {
@@ -46,7 +62,7 @@ PROJECTS.map(({image,title,description,tags,github})=>(
         </ul>
         <img 
             class='rounded-xl' 
-            src={image.ProyectClima.src} 
+            src={image.src} 
             alt={`Captura de pantalla del proyecto ${image}`}/>
          <a href={github} class="flex justify-center">  
           <h2 class="absolute align-middle bg-violet-600 hover:bg-violet-500 px-5 py-2 mt-3 text-sm 
