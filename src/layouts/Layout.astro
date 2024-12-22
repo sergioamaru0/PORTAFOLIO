@@ -1,0 +1,61 @@
+---
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title}</title>
+	</head>
+	<body>
+		<!-- Fondo oscuro (modo oscuro) -->
+		<div class="fixed inset-0 -z-10 min-h-screen min-w-full 
+			[background:radial-gradient(200%_200%_at_50%_10%,#000_40%,#63e_100%)] dark:block">
+		</div>
+		
+		<!-- Fondo claro (modo claro) -->
+		<div class="fixed inset-0 -z-10 min-h-screen min-w-full
+			[background:radial-gradient(150%_150%_at_50%_10%,#fff_40%,#63e_100%)] dark:hidden">
+		</div>	
+	
+		<Header/> 
+		<main class="min-h-screen"> <!-- Asegurar que el contenido tenga suficiente altura -->
+			<slot />
+		</main>
+		<Footer/>
+	</body>
+	
+</html>
+<style is:global>
+	:root {
+	 color-scheme: light dark;
+	}
+	html {
+		font-family:  system-ui, sans-serif;
+		scroll-behavior: smooth;
+	}
+	body{
+		display: flex;
+		flex-direction: column;
+		background: #262525;
+		min-height: 100vh;
+		
+	}
+	@media (prefers-reduced-motion: reduce){
+		html{
+			scroll-behavior: auto;
+		}
+	}
+</style>

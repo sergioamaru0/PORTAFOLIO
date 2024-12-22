@@ -1,0 +1,77 @@
+---
+import BreifCase from '../assets/icons/BreifCase.astro';
+import Github from '../assets/icons/github.astro';
+import Gmail from '../assets/icons/gmail.astro';
+import Linkedin from '../assets/icons/Linkedin.astro';
+import ProyectIcon from '../assets/icons/ProyectIcon.astro';
+import photoPerfil from '../assets/image/photoPerfil.png';
+import Badge from '../components/Badge.astro';
+import Experience from '../components/Experience.astro';
+import Projects from '../components/Projects.astro';
+import SectionContainer from '../components/SectionContainer.astro';
+import SocialPill from '../components/SocialPill.astro';
+import SocialPilllMail from '../components/SocialPilllMail.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Sergio Bareño.">
+	<main class="px-2 ">
+		
+		<SectionContainer class="py-10 lg:py-40 pb-24">
+			<img 
+        class="rounded-full size-20 m-2 mb-6 bg-slate-200 dark:bg-[#ddca8b]" 
+        src={photoPerfil.src} 
+        alt="foto sergio">
+			<h1 class="dark:text-white text-xl lg:text-4xl font-bold flex flex-row 
+				 gap-x-4 pb-6 lg:pb-10 ">
+				Hola, soy Sergio Bareño<div class=" flex justify-center items-center">
+					<a 
+					href="https://www.linkedin.com/in/sergio-andres-bareno-cubillos-bab632245/"
+					target="_blank"
+					rel="noopener"
+					class="flex justify-center items-center">
+						<Badge>Disponibilidad inmediata</Badge>
+					</a>
+				</div></h1>
+			<h2 class="text-xl text-wrap">
+				<span>+1 año de experiencia.</span>  
+				<span class="text-yellow-900 dark:text-yellow-200/90">Desarrollador fullstack mobile y web</span>. 
+				<span class="text-red-900 dark:text-red-300/90">De Bogota, co Colombia</span>. Especialista en creacion de apps mobile como web. 
+			</h2>	
+			
+			<nav class="flex gap-3 mt-8 flex-wrap">
+
+				<SocialPill href="https://www.linkedin.com/in/sergio-andres-bareno-cubillos-bab632245/">
+					<Linkedin class="size-4 lg:size-6"/>
+						Linkedin
+				</SocialPill>
+
+				<SocialPill href="https://github.com/sergioamaru0">
+					<Github class="size-4 lg:size-6"/>
+						GutHub
+				</SocialPill>
+				<SocialPilllMail href="mailto:sergiobaredo2904@gmail.com">
+					<Gmail class="size-4 lg:size-6"/>
+						sergiobaredo2904@gmail.com
+				</SocialPilllMail>
+				
+			</nav>
+					
+		</SectionContainer>	
+		<SectionContainer id="experiencia">
+			<h2 class="text-3xl font-semibold mb-6 flex gap-x-2 items-center ">
+				
+				<BreifCase class="size-6"/>
+				Experiancia laboral 
+			</h2>
+			<Experience/>
+		</SectionContainer>
+		<SectionContainer id="sobre-mi" class="mt-15 mb-15">
+			<h2 class="text-3xl font-semibold mb-6 flex gap-x-2 items-center ">
+				<ProyectIcon class="size-8 items-center"/>
+				Proyectos 
+			</h2>
+			<Projects/>
+		</SectionContainer>
+	</main>
+</Layout>

@@ -1,0 +1,32 @@
+---
+import Experiencia1Pdf from "../assets/certificado _laboral_servimax.pdf";
+import ExperienceItem from "./ExperienceItem.astro";
+
+const EXPERIENCE =[
+    {
+    date: 'Febrero 2024 - Agosto 2024',
+    title: 'Desarrollador fullstack mobile - SERVIMAX Y CIA S.A.S',
+    description:'mantenimiento, optimizacion y actualizacion de app (servimax conductores, servimax tenderos y servimax vendedor).',
+    link:`${Experiencia1Pdf}`,
+    dowload:`${Experiencia1Pdf}`
+
+
+},
+{
+    date: 'Abril 2023 - Noviembre 2023',
+    title: 'Desarrollador fullstack web',
+    description:'Mis principales funciones consistieron en el desarrollo, mantenimiento y mejora de una plataforma web de streaming, específicamente destinada a la transmisión en vivo y servicios interactivos como tercero.',
+    link:``,
+    dowload:``
+}
+]
+---
+<ol class="relative border-s border-black dark:border-gray-700 ml-3">
+    {
+    EXPERIENCE.map(experiencie => (
+    <li class="mb-10 ms-4">
+        <ExperienceItem {...experiencie}/>
+    </li>
+    ))
+    }
+</ol>
