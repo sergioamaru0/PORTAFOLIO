@@ -1,19 +1,26 @@
 # Memoria del proyecto
 
-Actualizado: 2026-11-17 · agente orquestador como primario
+Actualizado: 2026-11-18 · agente orquestador como primario
 
 ## Foco actual
 
-**Spec 003, fase 2: T17–T29, T31 y T32 implementadas.** Build verde (`check` 0/0/0, `build` 1 página, `lint:tokens` OK). RF-37/M-1 está cerrado con micro-auditoría real a 320/375 en ambos temas. T30 queda **diferida** para re-auditar RF-24 a RF-44, no para M-1.
+**Spec 003 fase 2 publicada en producción.** PR #1 mergeado a `main` (`2fe9199`) el 2026-11-18 a las
+20:15:59Z; Netlify desplegó en 21 s y sirve `https://sergiobaredo.netlify.app`. `Build` y `Spec` en
+verde; preview `https://deploy-preview-1--sergiobaredo.netlify.app`. RF-37/M-1 cerrado. T30 sigue
+**diferida** solo para RF-24 a RF-44.
 
 ## Siguiente paso
 
-1. Publicar preview mediante rama y PR para revisión manual de Sergio.
+1. Confirmar en GitHub que la protección de `main` quedó activa (el PAT no tiene `administration`
+   para leerla ni escribirla: devuelve 403).
 2. Reprogramar T30 solo para RF-24 a RF-44; M-1 ya está resuelto.
 3. Después, spec 004 (SEO técnico).
 
 ## Bloqueos
 
+- El PAT de `.secrets/github-mcp-token` sigue sin `pull_requests:write` ni `administration:write`
+  (`x-accepted-github-permissions = pull_requests=write`). El PR #1 se abrió y mergeó a mano desde
+  la web, así que no hay automatización de PR mientras no se regenere el token.
 - T30 diferida: `ui-tester` agotó la cuota del modelo y la evidencia parcial no es concluyente.
 - Spec 004 (SEO): falta el subdominio exacto de Netlify para `site`, canonical y sitemap.
 - Search Console y URL de LinkedIn: pendientes para el schema `Person`.
@@ -68,9 +75,19 @@ Actualizado: 2026-11-17 · agente orquestador como primario
   Micro-auditoría RF-37: 320/375 claro/oscuro con raíz 32 px, `scrollWidth − clientWidth = 0` en las
   4 combinaciones y 0 elementos fuera del viewport. M-1 queda cerrado.
 - 2026-11-17 · Protección de `main` no aplicada: el PAT de `.secrets/github-mcp-token` devuelve
-  HTTP 403 en `PUT /branches/main/protection`; falta permiso de administración. Deploy preview
-  tampoco ejecutado: `deployer` no pudo usar `shell` para git/build. No hay commit, push, PR ni
-  preview nuevos.
+  HTTP 403 en `PUT /branches/main/protection`; falta permiso de administración.
+- 2026-11-18 · Rama `feat/spec-003-fase2-ui` publicada en `b016703` (86 archivos; PDF del
+  certificado incluido). El PAT también devuelve 403 al crear el PR: falta `Pull requests:
+  Read and write`. Sin PR no hay deploy preview de Netlify ni checks de CI visibles.
+- 2026-11-18 · Revisión de HV y descargas sin hallazgos: 5/5 PDFs válidos (`%PDF-`…`%%EOF`, sin
+  cifrar) y presentes en `dist` con el mismo tamaño; 9 `href` a PDF resuelven a archivos reales
+  (incluidos `%20`, `%C3%93` y `%C3%91`); 5 atributos `download` con nombre limpio; `preview`
+  devuelve 200 y `application/pdf` en las 5 rutas. La HV es A4 de 1 página, creada hoy en Canva,
+  con texto real («SERGIO», «PERFIL», «EXPERIENCIA»). `dist/index.html` es UTF-8 sin BOM ni U+FFFD.
+- 2026-11-18 · PR #1 abierto y mergeado a mano por Sergio desde la web (el PAT no podía crearlo).
+  `Build` y `Spec` en verde y Deploy Preview `deploy-preview-1` listos antes del merge. Producción
+  desplegada en 21 s sobre `main@2fe9199`; verificado en vivo: 5/5 PDFs con 200, `application/pdf`
+  y `X-Robots-Tag: noindex`. El flujo rama → PR → checks → merge → deploy funcionó completo.
 
 ## Deuda conocida
 
