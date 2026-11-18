@@ -1,9 +1,39 @@
 ---
+/*
+ * Página única del portafolio — plan 003, T14 · RF-13, RF-14, RF-17, RF-20, RF-22, RNF-3.
+ *
+ * Hero: un solo <h1> con el nombre (H5 y RF-17). El badge de disponibilidad sale
+ * del encabezado y del enlace a LinkedIn que lo envolvía: es un <span> estático
+ * (Badge, T9), no una afordancia pulsable, y deja de contaminar el nombre
+ * accesible del h1. El enlace a LinkedIn sigue en el nav de contacto.
+ *
+ * Rol y localidad bajan de <h2> a <p>: no son encabezados, son copy del hero
+ * (RF-14). El rol va en text-foreground font-medium y la localidad en
+ * text-muted-foreground: el acento queda para enlaces y foco (RF-12).
+ *
+ * El avatar usa <Image> de astro:assets con alt descriptivo (RF-22) y
+ * width/height emitidos por el componente (RNF-3: sin CLS). Es la única imagen
+ * sobre el pliegue, así que va en loading="eager" y no con el lazy por defecto
+ * del componente (RNF-4): son 3 KB y el resto de imágenes sí siguen diferidas.
+ *
+ * Las secciones exponen #experiencia y #proyectos: cierra el desfase que
+ * declaró T7 en el Header. Proyectos deja de llamarse id="sobre-mi", que no era
+ * el destino de ninguna ancla. mt-15/mb-15 no existen en la escala de Tailwind y
+ * eran inertes: se sustituyen por mt-16/mb-16 (RF-14). Fuera el <div px-2>, que
+ * duplicaba el padding lateral de SectionContainer (RF-13).
+ *
+ * «+1 año de experiencia» se conserva literal, en el mismo <span>: lo sustituye
+ * la spec 002 con experienceYearsLabel(). No se corrige aquí.
+ */
+import { experienceYearsLabel } from '../data/experience.ts';
+import { Image } from 'astro:assets';
+import hv from '../assets/hv/Hoja_de_Vida_sergio_bareno.pdf';
 import BreifCase from '../assets/icons/BreifCase.astro';
 import Github from '../assets/icons/github.astro';
 import Gmail from '../assets/icons/gmail.astro';
 import Linkedin from '../assets/icons/Linkedin.astro';
 import Resume from '../assets/icons/Resume.astro';
+import Whatsapp from '../assets/icons/Whatsapp.astro';
 import ProyectIcon from '../assets/icons/ProyectIcon.astro';
 import photoPerfil from '../assets/image/photoPerfil.png';
 import Badge from '../components/Badge.astro';
@@ -11,73 +41,78 @@ import Experience from '../components/Experience.astro';
 import Projects from '../components/Projects.astro';
 import SectionContainer from '../components/SectionContainer.astro';
 import SocialPill from '../components/SocialPill.astro';
-import SocialPilllMail from '../components/SocialPilllMail.astro';
 import Layout from '../layouts/Layout.astro';
 ---
 
 <Layout title="Sergio Bareño.">
-	<main class="px-2 ">
-		
-		<SectionContainer class="py-10 lg:py-40 pb-24">
-			<img 
-        class="rounded-full size-12 m-2 mb-6 bg-slate-400 dark:bg-[#ddca8b]" 
-        src={photoPerfil.src} 
-        alt="foto sergio">
-			<h1 class="dark:text-white text-xl lg:text-4xl font-bold flex flex-row 
-				 gap-x-4 pb-6 lg:pb-10 ">
-				Hola, soy Sergio Bareño<div class=" flex justify-center items-center">
-					<a 
-					href="https://www.linkedin.com/in/sergio-andres-bareno-cubillos-bab632245/"
-					target="_blank"
-					rel="noopener"
-					class="flex justify-center items-center">
-						<Badge>Disponibilidad inmediata</Badge>
-					</a>
-				</div></h1>
-			<h2 class="text-xl text-wrap">
-				<span>+1 año de experiencia.</span>  
-				<span class="text-yellow-900 dark:text-yellow-200/90">Desarrollador fullstack mobile y web</span>. 
-				<span class="text-red-900 dark:text-red-300/90">De Bogota, co Colombia</span>. Especialista en creacion de apps mobile como web. 
-			</h2>	
-			
-			<nav class="flex gap-3 mt-8 flex-wrap">
-				
-				   <SocialPill href='/src/assets/hv/Hoja_de_Vida_sergio_bareno.pdf' download="Hoja de vida sergio.pdf">
-					  <Resume class="size-4 lg:size-6"/>
-						  HV
-				   </SocialPill>
+	<SectionContainer class="py-10 lg:py-40 pb-24">
+		<Image
+			src={photoPerfil}
+			alt="Retrato de Sergio Bareño"
+			widths={[48, 96]}
+			sizes="48px"
+			loading="eager"
+			class="mb-6 size-12 rounded-full object-cover"
+		/>
+		<div class="flex flex-wrap items-center gap-x-4 gap-y-3">
+			<h1 class="text-3xl font-bold lg:text-4xl">Hola, soy Sergio Bareño</h1>
+			<Badge>Disponibilidad inmediata</Badge>
+		</div>
+		<p class="mt-4 max-w-prose text-lg text-pretty">
+			<span>{experienceYearsLabel()}</span>
+			<span class="font-medium text-foreground">Desarrollador fullstack mobile y web</span>.
+			<span class="text-muted-foreground">De Bogotá, Colombia</span>. Especialista en creación de apps mobile como web.
+		</p>
 
-				<SocialPill href="https://www.linkedin.com/in/sergio-andres-bareno-cubillos-bab632245/">
-					<Linkedin class="size-4 lg:size-6"/>
-						Linkedin
-				</SocialPill>
+		<nav class="mt-8 flex flex-wrap gap-3" aria-label="Enlaces de contacto">
+			<SocialPill
+				href={hv}
+				download="Hoja de vida - Sergio Bareño.pdf"
+			>
+				<Resume class="size-4 lg:size-6" />
+				HV
+			</SocialPill>
 
-				<SocialPill href="https://github.com/sergioamaru0">
-					<Github class="size-4 lg:size-6"/>
-						GutHub
-				</SocialPill>
-				<SocialPilllMail href="mailto:sergiobaredo2904@gmail.com">
-					<Gmail class="size-4 lg:size-6"/>
-						sergiobaredo2904@gmail.com
-				</SocialPilllMail>
-				
-			</nav>
-					
-		</SectionContainer>	
-		<SectionContainer id="experiencia">
-			<h2 class="text-3xl font-semibold mb-6 flex gap-x-2 items-center ">
-				
-				<BreifCase class="size-6"/>
-				Experiancia laboral 
-			</h2>
-			<Experience/>
-		</SectionContainer>
-		<SectionContainer id="sobre-mi" class="mt-15 mb-15">
-			<h2 class="text-3xl font-semibold mb-6 flex gap-x-2 items-center ">
-				<ProyectIcon class="size-8 items-center"/>
-				Proyectos 
-			</h2>
-			<Projects/>
-		</SectionContainer>
-	</main>
+			<SocialPill href="https://www.linkedin.com/in/sergio-andres-bareno-cubillos-bab632245/">
+				<Linkedin class="size-4 lg:size-6" />
+				Linkedin
+			</SocialPill>
+
+			<SocialPill href="https://github.com/sergioamaru0">
+				<Github class="size-4 lg:size-6" />
+				GitHub
+			</SocialPill>
+
+			<SocialPill href="mailto:sergiobaredo2904@gmail.com">
+				<Gmail class="size-4 lg:size-6" />
+				sergiobaredo2904@gmail.com
+			</SocialPill>
+
+			<SocialPill href="https://wa.me/573153536433">
+				<Whatsapp class="size-4 lg:size-6" />
+				WhatsApp
+			</SocialPill>
+		</nav>
+	</SectionContainer>
+
+	<SectionContainer id="experiencia">
+		<h2 class="mb-6 flex min-w-0 items-center gap-x-2 text-3xl font-semibold">
+			<BreifCase class="size-6 shrink-0" />
+			<span class="min-w-0 break-words">Experiencia laboral</span>
+		</h2>
+		<Experience />
+	</SectionContainer>
+
+	<SectionContainer id="proyectos" class="mt-16 mb-16">
+		<h2 class="mb-6 flex min-w-0 items-center gap-x-2 text-3xl font-semibold">
+			<ProyectIcon class="size-8 shrink-0 items-center" />
+			<span class="min-w-0 break-words">Proyectos</span>
+		</h2>
+		<Projects />
+	</SectionContainer>
 </Layout>
+
+
+
+
+

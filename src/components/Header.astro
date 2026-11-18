@@ -1,11 +1,34 @@
 ---
-
+/*
+ * Cabecera del sitio — plan 003, D5 · RF-13, RF-19, RF-20, RF-23.
+ *
+ * Contenedor del sistema: 768 px de ancho máximo y 16 px de padding lateral
+ * (RF-13), el mismo que usarán las secciones para que la columna de lectura
+ * quede alineada de la cabecera al pie.
+ *
+ * Dos anclas, y solo dos, que existen en el documento: #experiencia (creada
+ * por la sección de experiencia) y #proyectos (la crea T14; desfase declarado
+ * en tasks.md). Fuera «Inicio» (#top), «Contacto» (#contacto) y el #sobre-mi
+ * inexistente. «Sobre mí» apuntaba a #experiencia: se renombra a «Experiencia»
+ * para que etiqueta y destino coincidan (RF-20).
+ *
+ * Cada enlace es inline-flex min-h-11: 44 px de alto y el ancho del texto, que
+ * ya supera 44 px en ambas etiquetas (RF-23). El foco es el :focus-visible
+ * global de global.css (D8): no se redefine aquí (RF-19).
+ *
+ * La fila envuelve (flex-wrap) para que el selector de tema nunca empuje el
+ * documento más allá del viewport en pantallas estrechas (RNF-3). Sin variantes
+ * de tema ni clases de paleta: el texto hereda `text-foreground` del body y la
+ * tipografía es la sans del sistema (la mono queda para fechas y etiquetas).
+ */
+import ThemeToggle from './ThemeToggle.astro';
 ---
-<header class="flex justify-center items-center py-5 xl:w-[1120px] mx-auto">
-    <nav class="flex flex-row gap-x-8 m-2 font-mono font-bold ">
-        <a href="#top" >Inicio</a>
-        <a href="#experiencia">Sobre mí</a>
-        <a href="#sobre-mi">Proyectos</a>
-        <a href="#contacto">Contacto</a>
-    </nav>
+<header
+	class="mx-auto flex w-full max-w-3xl flex-wrap items-center justify-between gap-x-4 gap-y-2 px-4 py-4"
+>
+	<nav class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm font-medium">
+		<a href="#experiencia" class="inline-flex min-h-11 items-center">Experiencia</a>
+		<a href="#proyectos" class="inline-flex min-h-11 items-center">Proyectos</a>
+	</nav>
+	<ThemeToggle />
 </header>

@@ -1,0 +1,155 @@
+{
+  // Configuración de OpenCode V2 para el portafolio.
+  // Documentación: https://opencode.ai/docs/config
+  "$schema": "https://opencode.ai/config.json",
+
+  // Contexto que ven TODOS los agentes en cada request.
+  "instructions": [
+    "docs/constitution.md",
+    "docs/memoria.md"
+  ],
+
+  // Agente primario por defecto: recibe al humano y despacha subagentes.
+  "default_agent": "orchestrator",
+
+  "compaction": {
+    "auto": true,
+    "keep": {
+      "tokens": 15000
+    }
+  },
+
+  "experimental": {
+    "todo": true
+  },
+  // Define qué modelo se carga al iniciar. Puedes cambiarlo luego con /model
+
+  "providers": {
+    "alibaba": {
+      "models": {
+        "glm-5.3": {
+          "name": "glm-5.3(Alibaba Free)",
+          "contextWindow": 32768,
+          "maxTokens": 8192,
+          "reasoning": false
+        }
+        // NOTA: Agrega aquí más modelos una vez tengamos los IDs exactos del curl
+      }
+    }
+  },
+  // Permisos globales. Las reglas se evalúan en orden y gana la última.
+  "permissions": [
+    { "action": "shell", "resource": "*", "effect": "ask" },
+
+    // Lectura e inspección seguras.
+    { "action": "shell", "resource": "git status *", "effect": "allow" },
+    { "action": "shell", "resource": "git diff *", "effect": "allow" },
+    { "action": "shell", "resource": "git log *", "effect": "allow" },
+    { "action": "shell", "resource": "git branch *", "effect": "allow" },
+    { "action": "shell", "resource": "git show *", "effect": "allow" },
+
+    // Flujo de trabajo en rama.
+    { "action": "shell", "resource": "git checkout -b *", "effect": "allow" },
+    { "action": "shell", "resource": "git switch -c *", "effect": "allow" },
+    { "action": "shell", "resource": "git add *", "effect": "allow" },
+    { "action": "shell", "resource": "git commit *", "effect": "allow" },
+    { "action": "shell", "resource": "git push *", "effect": "allow" },
+
+    // Nunca a main, nunca con fuerza, nunca destructivo.
+    { "action": "shell", "resource": "git push --force*", "effect": "deny" },
+    { "action": "shell", "resource": "git push -f *", "effect": "deny" },
+    { "action": "shell", "resource": "git push * main", "effect": "deny" },
+    { "action": "shell", "resource": "git push * main *", "effect": "deny" },
+    { "action": "shell", "resource": "git push origin +*", "effect": "deny" },
+    { "action": "shell", "resource": "git reset --hard *", "effect": "deny" },
+    { "action": "shell", "resource": "git clean -fd*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -rf *", "effect": "deny" },
+    { "action": "shell", "resource": "Remove-Item * -Recurse *", "effect": "deny" },
+
+    // El proyecto se construye y verifica siempre igual.
+    { "action": "shell", "resource": "npm run *", "effect": "allow" },
+    { "action": "shell", "resource": "npm ci", "effect": "allow" },
+    { "action": "shell", "resource": "npm install *", "effect": "ask" },
+    { "action": "shell", "resource": "npx astro *", "effect": "allow" },
+
+    // Escritura en MCP: solo el subagente deployer puede usar Netlify.
+    { "action": "netlify_*", "resource": "*", "effect": "deny" },
+    // El navegador consume mucho contexto: solo auditores.
+    { "action": "chrome_devtools_*", "resource": "*", "effect": "deny" }
+  ],
+
+  "agents": {
+    "build": {
+      "permissions": [
+        { "action": "subagent", "resource": "*", "effect": "ask" },
+        { "action": "subagent", "resource": "spec-writer", "effect": "allow" },
+        { "action": "subagent", "resource": "planner", "effect": "allow" },
+        { "action": "subagent", "resource": "implementer", "effect": "allow" },
+        { "action": "subagent", "resource": "reviewer", "effect": "allow" },
+        { "action": "subagent", "resource": "ui-tester", "effect": "allow" },
+        { "action": "subagent", "resource": "seo-auditor", "effect": "allow" },
+        { "action": "subagent", "resource": "deployer", "effect": "allow" },
+        { "action": "subagent", "resource": "general", "effect": "allow" },
+        { "action": "subagent", "resource": "explore", "effect": "allow" }
+      ]
+    }
+  },
+
+  "mcp": {
+    "servers": {
+      // Repositorio, issues y pull requests.
+      // Token personal en .secrets/github-mcp-token (ignorado por git).
+      // OpenCode V2 no carga .env: usa {file:...} o una variable de entorno real.
+      "github": {
+        "type": "remote",
+        "url": "https://api.githubcopilot.com/mcp/",
+        "oauth": false,
+        "headers": {
+          "Authorization": "Bearer {file:.secrets/github-mcp-token}"
+        }
+      },
+
+      // Deploy previews y estado del sitio.
+      // Servidor local con PAT: el OAuth remoto caduca en este entorno.
+      // Token en .secrets/netlify-mcp-token (ignorado por git).
+      "netlify": {
+        "type": "local",
+        "command": ["npx", "-y", "@netlify/mcp"],
+        "environment": {
+          "NETLIFY_PERSONAL_ACCESS_TOKEN": "{file:.secrets/netlify-mcp-token}"
+        },
+        "timeout": {
+          "startup": 120000
+        }
+      },
+
+      // Documentación oficial de Astro, sin autenticación.
+      "astro-docs": {
+        "type": "remote",
+        "url": "https://mcp.docs.astro.build/mcp",
+        "timeout": {
+          "catalog": 60000
+        }
+      },
+
+      // Navegador para auditorías de UI, a11y y rendimiento.
+      "chrome-devtools": {
+        "type": "local",
+        "command": [
+          "npx",
+          "-y",
+          "chrome-devtools-mcp@1.13.0",
+          "--isolated",
+          "--headless",
+          "--no-usage-statistics",
+          "--no-performance-crux",
+          "--executablePath",
+          "C:/Program Files/BraveSoftware/Brave-Browser/Application/brave.exe"
+        ],
+        "timeout": {
+          "startup": 60000
+        }
+      }
+    }
+  }
+}

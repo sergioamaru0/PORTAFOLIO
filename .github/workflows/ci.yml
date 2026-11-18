@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build
+
+      # La auditoría estricta se activa sola cuando exista el componente de SEO.
+      - name: SEO audit
+        run: |
+          if [ -f src/components/Seo.astro ]; then
+            npm run audit:seo:strict
+          else
+            npm run audit:seo
+          fi
+
+  spec:
+    name: Spec
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Exigir spec cuando cambia src/
+        run: |
+          CHANGED=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD")
+          echo "$CHANGED"
+          if echo "$CHANGED" | grep -qE '^src/'; then
+            if ! echo "$CHANGED" | grep -qE '^(specs/|docs/memoria\.md)'; then
+              echo "::error::Cambios en src/ sin actualizar specs/ ni docs/memoria.md"
+              exit 1
+            fi
+          fi
