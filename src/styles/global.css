@@ -1,0 +1,110 @@
+/*
+ * Capa de tokens — «tinta y papel».
+ *
+ * Única fuente de verdad del color y del tema (ADR-0003). Los valores son
+ * tripletas HSL que Tailwind consume como hsl(var(--token) / <alpha-value>);
+ * la tabla aprobada vive en specs/003-identidad-visual/spec.md, sección
+ * «Paleta y tipografía (decidido)».
+ *
+ * El tema oscuro aparece dos veces a propósito (plan 003, D1): una para el
+ * tema del sistema sin JavaScript (RNF-5) y otra para la preferencia explícita
+ * con [data-theme]. Cualquier token nuevo se edita en los tres bloques.
+ *
+ * Este archivo solo declara tokens y base mínima. Ningún estilo de componente.
+ */
+
+/* Tema claro: valor por defecto y preferencia explícita por el claro. */
+:root {
+	color-scheme: light;
+
+	--background: 45 20% 98%;
+	--foreground: 220 15% 10%;
+	--surface: 0 0% 100%;
+	--muted: 45 15% 94%;
+	--muted-foreground: 220 9% 40%;
+	--primary: 175 70% 26%;
+	--primary-foreground: 0 0% 100%;
+	--border: 45 12% 87%;
+	--border-strong: 45 12% 49%;
+	--ring: 175 70% 26%;
+	--destructive: 0 70% 40%;
+
+	--font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+	--font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+/* Tema oscuro del sistema, solo si no hay preferencia explícita por el claro. */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		color-scheme: dark;
+
+		--background: 220 15% 6%;
+		--foreground: 45 15% 96%;
+		--surface: 220 14% 10%;
+		--muted: 220 12% 14%;
+		--muted-foreground: 220 8% 65%;
+		--primary: 172 60% 55%;
+		--primary-foreground: 220 20% 8%;
+		--border: 220 12% 20%;
+		--border-strong: 220 12% 46%;
+		--ring: 172 60% 55%;
+		--destructive: 0 65% 65%;
+	}
+}
+
+/* Tema oscuro por preferencia explícita: gana siempre al sistema. */
+[data-theme="dark"] {
+	color-scheme: dark;
+
+	--background: 220 15% 6%;
+	--foreground: 45 15% 96%;
+	--surface: 220 14% 10%;
+	--muted: 220 12% 14%;
+	--muted-foreground: 220 8% 65%;
+	--primary: 172 60% 55%;
+	--primary-foreground: 220 20% 8%;
+	--border: 220 12% 20%;
+	--border-strong: 220 12% 46%;
+	--ring: 172 60% 55%;
+	--destructive: 0 65% 65%;
+}
+
+/* Base mínima (ADR-0003). */
+html {
+	font-family: var(--font-sans);
+	scroll-behavior: smooth;
+}
+
+body {
+	background: hsl(var(--background));
+	color: hsl(var(--foreground));
+	font-family: var(--font-sans);
+	line-height: 1.6;
+}
+
+/* RF-19: anillo de foco de 2 px con 2 px de separación en todo interactivo. */
+:focus-visible {
+	outline: 2px solid hsl(var(--ring));
+	outline-offset: 2px;
+}
+
+/* D9: transición corta de color entre estados de tema, nunca en el primer pintado. */
+body,
+body * {
+	transition:
+		background-color 150ms ease-out,
+		border-color 150ms ease-out,
+		color 150ms ease-out;
+}
+
+/* RF-6: sin desplazamiento suave ni transiciones cuando el visitante lo pide. */
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
+	body,
+	body * {
+		transition: none;
+	}
+}

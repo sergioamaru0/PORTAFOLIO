@@ -1,0 +1,80 @@
+---
+import Moon from '../assets/icons/Moon.astro';
+import Sun from '../assets/icons/Sun.astro';
+
+/*
+ * Selector de tema de dos estados — plan 003, D10 · RF-2, RF-3, RF-8, RF-9, RF-23,
+ * RF-24, RF-25, RF-26, RF-27.
+ *
+ * Marcado: un botón nativo con role="switch", aria-label fijo "Tema oscuro" e iconos
+ * de sol/luna (RF-24, RF-25). El icono visible es el del destino: luna en tema claro,
+ * sol en tema oscuro. La visibilidad de cada icono la alterna sync() con el atributo
+ * hidden (RF-27). El área mínima de 44 × 44 px sale de min-h-11 min-w-11 y el foco es
+ * el :focus-visible global de global.css (D8): no se redefine aquí.
+ *
+ * El tema NO se aplica desde este script. Eso lo hace el bloque inline del
+ * <head> de Layout.astro antes del primer pintado (D2, RF-5). Aquí solo se
+ * sincroniza aria-checked con el tema realmente en curso, se persiste la
+ * elección, se siguen los cambios del sistema mientras no haya preferencia
+ * explícita y se sincronizan dos pestañas.
+ */
+---
+
+<button
+	id="theme-toggle"
+	type="button"
+	role="switch"
+	aria-checked="false"
+	aria-label="Tema oscuro"
+	class="inline-flex min-h-11 min-w-11 items-center justify-center rounded border border-border-strong bg-surface p-2.5 text-foreground hover:bg-muted"
+>
+	<Moon class="size-5" id="moon-icon" />
+	<Sun class="size-5" id="sun-icon" hidden />
+</button>
+
+<script is:inline>
+	(() => {
+		const btn = document.getElementById('theme-toggle');
+		const moon = document.getElementById('moon-icon');
+		const sun = document.getElementById('sun-icon');
+		const media = matchMedia('(prefers-color-scheme: dark)');
+		const meta = document.querySelector('meta[name=theme-color]');
+		const read = () => {
+			try {
+				const t = localStorage.getItem('theme');
+				return t === 'light' || t === 'dark' ? t : null;
+			} catch (e) {
+				return null;
+			}
+		};
+		const current = () => document.documentElement.dataset.theme || (media.matches ? 'dark' : 'light');
+		const sync = () => {
+			const t = current();
+			btn.setAttribute('aria-checked', t === 'dark' ? 'true' : 'false');
+			moon.toggleAttribute('hidden', t === 'dark');
+			sun.toggleAttribute('hidden', t !== 'dark');
+			if (meta) meta.content = t === 'dark' ? '#0D0F12' : '#FBFAF9';
+		};
+		const apply = (t) => {
+			document.documentElement.dataset.theme = t;
+			try {
+				localStorage.setItem('theme', t);
+			} catch (e) {}
+			sync();
+		};
+		btn.addEventListener('click', () => apply(current() === 'dark' ? 'light' : 'dark'));
+		media.addEventListener('change', () => {
+			if (read()) return; // RF-3: sin preferencia manda el sistema
+			document.documentElement.dataset.theme = media.matches ? 'dark' : 'light';
+			sync();
+		});
+		addEventListener('storage', (e) => {
+			if (e.key !== 'theme') return; // dos pestañas
+			const t = read();
+			if (t) document.documentElement.dataset.theme = t;
+			else delete document.documentElement.dataset.theme;
+			sync();
+		});
+		sync();
+	})();
+</script>

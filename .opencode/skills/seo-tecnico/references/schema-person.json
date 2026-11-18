@@ -1,0 +1,46 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://TU-DOMINIO/#person",
+      "name": "Sergio Andrés Bareño",
+      "jobTitle": "Desarrollador Fullstack",
+      "description": "Desarrollador fullstack con experiencia en aplicaciones web y móviles.",
+      "url": "https://TU-DOMINIO/",
+      "image": "https://TU-DOMINIO/og/perfil.jpg",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Bogotá",
+        "addressCountry": "CO"
+      },
+      "sameAs": [
+        "https://github.com/sergioamaru0",
+        "https://www.linkedin.com/in/TU-PERFIL"
+      ],
+      "knowsAbout": [
+        "Astro",
+        "TypeScript",
+        "Tailwind CSS",
+        "Desarrollo web"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://TU-DOMINIO/#website",
+      "url": "https://TU-DOMINIO/",
+      "name": "Sergio Bareño — Desarrollador Fullstack",
+      "inLanguage": "es",
+      "publisher": { "@id": "https://TU-DOMINIO/#person" }
+    },
+    {
+      "@type": "ProfilePage",
+      "@id": "https://TU-DOMINIO/#profilepage",
+      "url": "https://TU-DOMINIO/",
+      "name": "Sergio Bareño — Desarrollador Fullstack",
+      "inLanguage": "es",
+      "isPartOf": { "@id": "https://TU-DOMINIO/#website" },
+      "mainEntity": { "@id": "https://TU-DOMINIO/#person" }
+    }
+  ]
+}
